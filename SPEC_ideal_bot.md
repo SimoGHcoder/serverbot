@@ -20,6 +20,7 @@ Un bot domestico deve essere **utile, sicuro, verificabile**. Ogni azione deve e
 ## 2. Funzionalità core (il minimo indispensabile)
 
 ### 2.1 Controllo container Docker
+
 - Inventario con stato, health, immagine, uptime, restart count.
 - Start / stop / restart singolo con conferma monouso (challenge + scadenza).
 - Restart-all degli attivi, escluso il bot stesso.
@@ -27,15 +28,18 @@ Un bot domestico deve essere **utile, sicuro, verificabile**. Ogni azione deve e
 - **Assenza totale** di pull-on-check, aggiornamenti impliciti, prune, shutdown host: azioni pericolose vanno gestite da procedure Compose dedicate, non dal bot.
 
 ### 2.2 Stato host
+
 - Uptime, RAM, dischi, load da `/proc` e API filesystem (sola lettura, no shell).
 - Riconoscimento mount specifici (es. `/mnt/storage_immich`) per storage dedicato.
 
 ### 2.3 Audit e stato
+
 - SQLite con 3 tabelle: stati container (watchdog), audit azioni, eventi webhook.
 - Migrazione schema non distruttiva per preservare la storia.
 - Troncamento campi per evitare righe eccessive.
 
 ### 2.4 Autenticazione
+
 - Autorizzazione per ID Telegram esatto, nessun fallback a gruppi.
 - Challenge crittografici (`secrets.token_urlsafe`) con scadenza.
 - Token per container con purga automatica degli scaduti.
@@ -45,7 +49,7 @@ Un bot domestico deve essere **utile, sicuro, verificabile**. Ogni azione deve e
 ## 3. Sicurezza (livello atteso)
 
 | Controllo | Requisito |
-|-----------|-----------|
+| ----------- | ----------- |
 | Socket Docker | Mount con capability rimosse; **obiettivo**: proxy API write-scoped o agente host ristretto |
 | Webhook | Bearer token HMAC, body limitato, 404 se non configurato |
 | Anti-SSRF | Allowlist host/schema per health check esterni |
@@ -60,12 +64,14 @@ Un bot domestico deve essere **utile, sicuro, verificabile**. Ogni azione deve e
 Queste funzionalità trasformerebbero il bot da "pannello di controllo" a "assistente operativo autonomo". Sono ordinate per priorità e fattibilità.
 
 ### 4.1 Osservabilità avanzata
+
 - **Metriche storiche**: serie temporali di CPU/RAM/dischi/container su SQLite o InfluxDB, con grafici settimanali inviati su comando.
 - **Alert proattivi**: notifica soglie (es. disco > 90%, container riavviato N volte, memoria > 85%) invece di solo stato on-demand.
 - **Aggregazione log**: ricerca testuale nei log container con filtri (intervallo, livello, pattern) e paginazione.
 - **Health check end-to-end**: ping periodico dei servizi critici (Immich, OmniRoute, DIUN) con dashboard "tutto verde / qualcosa non va".
 
 ### 4.2 Automazione operativa
+
 - **Scheduler comandi**: esegui azioni a orari definiti (es. stop container non usati dopo mezzanotte, restart mattutino).
 - **Scene predefinite**: macro "buongiorno" / "buonanotte" che avviano/arrestano gruppi di container con una conferma.
 - **Auto-remediation**: riavvio automatico di container con health `unhealthy` dopo N tentativi, con notifica e log.
@@ -73,6 +79,7 @@ Queste funzionalità trasformerebbero il bot da "pannello di controllo" a "assis
 - **Update management**: elenco immagini con update available (senza pull automatico), approvazione via bot, esecuzione tramite Compose con rollback automatico su fallimento health check.
 
 ### 4.3 Sicurezza avanzata
+
 - **Autorizzazione multi-utente**: lista ID autorizzati con ruoli (viewer / operator / admin) e permessi per azione.
 - **Autenticazione a due fattori**: conferma via codice per azioni critiche (restart-all, stop DB).
 - **Rate limiting**: throttling comandi per utente per prevenire abusi.
@@ -81,6 +88,7 @@ Queste funzionalità trasformerebbero il bot da "pannello di controllo" a "assis
 - **Rotazione segreti**: comando per rigenerare token webhook e challenge senza riavvio.
 
 ### 4.4 Integrazioni
+
 - **Home Assistant**: stato device, trigger scene, lettura sensori.
 - **Immich**: foto recenti, conteggio asset, stato backup.
 - **Smart notifications**: alert da servizi di terze parti (Grafana, Uptime Kuma, Pi-hole) inoltrati come messaggi Telegram.
@@ -88,6 +96,7 @@ Queste funzionalità trasformerebbero il bot da "pannello di controllo" a "assis
 - **Web UI locale**: dashboard web (FastAPI + template) per chi preferisce browser a Telegram.
 
 ### 4.5 Robustezza e manutenibilità
+
 - **Config hot-reload**: ricarica configurazione senza riavvio (SIGHUP o comando Telegram).
 - **Graceful degradation**: se Docker non raggiungibile, bot rimane attivo per comandi non-Docker (orario, Alea, stato host).
 - **Test coverage > 80%**: test async, test integrazione Docker con container effimeri, test webhook con TestClient.
@@ -96,6 +105,7 @@ Queste funzionalità trasformerebbero il bot da "pannello di controllo" a "assis
 - **Versioning semantico**: tag release, changelog, rollback a versione precedente.
 
 ### 4.6 Esperienza utente
+
 - **Onboarding**: primo avvio guida alla configurazione (token, user ID, container da escludere).
 - **Help contestuale**: `/help` per ogni area (Docker, Alea, OmniRoute) con esempi.
 - **i18n**: italiano/inglese switchabile.
@@ -106,7 +116,7 @@ Queste funzionalità trasformerebbero il bot da "pannello di controllo" a "assis
 
 ## 5. Architettura target (visione)
 
-```
+```markdown
 bot_server.py                    Orchestrazione: handler, task, webhook, scheduler
 ├── modules/settings.py          Config + validazione strict
 ├── modules/authorization.py     Auth multi-ruolo

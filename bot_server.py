@@ -173,6 +173,8 @@ async def _system_status_text() -> str:
 
 
 def _pending_map(context: ContextTypes.DEFAULT_TYPE) -> dict[str, dict[str, Any]]:
+    if context.user_data is None:
+        context.user_data = {}
     return context.user_data.setdefault("pending_actions", {})
 
 
