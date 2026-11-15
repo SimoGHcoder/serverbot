@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Server Bot — copia locale revisionata
 
 Questa directory è una copia locale di `/opt/server-bot` acquisita via Termalin il **11 novembre 2026** e revisionata per l'uso come pannello operativo Telegram. Le modifiche si applicano soltanto a questa copia. Sul server non è stato scritto nulla.
@@ -72,3 +73,6 @@ Inclusi tutti i file sorgente/configurazione necessari trovati in `/opt/server-b
 - Ultimo stato salvato dal bot nel DB (11/11/2026 21:16): `server-bot` attivo, `diun` terminato con codice 0. È stato snapshot interno, non una lettura Docker corrente. `aleabot` risulta terminato il 5/11; è un container separato, escluso da questa copia e non modificato.
 
 Non ho installato dipendenze né eseguito test o build. La copia richiede una revisione operativa e la verifica dell'ambiente prima del deploy.
+=======
+# serverbot
+>>>>>>> e61c185dad59ecc5b0eae6750c785c8d3cad2174
