@@ -1,0 +1,29 @@
+services:
+  server-bot:
+    build: .
+    container_name: server-bot
+    restart: unless-stopped
+    init: true
+    env_file:
+      - /opt/.env
+    volumes:
+      # Full Docker API control is powerful; replace with an audited write-scoped proxy
+      # before deployment if one with the required start/stop/restart API is available.
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./logs:/opt/server-bot/logs
+      - /mnt:/mnt:ro
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 384m
+    cpus: 1.0
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
